@@ -1,0 +1,4 @@
+{
+  "jwtPrivateKey": "secondPrivateKey",
+  "db": "mongodb://localhost/momo-site"
+}
