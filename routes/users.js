@@ -1,0 +1,34 @@
+const express = require("express");
+const router = express.Router();
+const _ = require('lodash');
+const bcrypt = require('bcrypt');
+const{User, validateUser} = require('../models/user');
+
+
+//Async function for creating User
+router.post('/',async(req, res) => {
+    //Validating input data from JOI function
+    const {error} = validateUser(req.body);
+    if(error) return res.status(400).send(error.details[0].message);
+
+    //Checking in the DB if there is already registered user with this email
+    let user = await User.findOne({userEmail: req.body.userEmail});
+    const reqEmail = req.body.userEmail;
+    if(user) return res.status(409).send(`User with an email: ${reqEmail} already exists!`);
+
+    //Creating User object
+    user = new User(_.pick(req.body,['userName','userFamily','userEmail','userPassword','userPicture']));
+
+    //Generating salt from bcrypt
+    const salt = await bcrypt.genSalt(10);
+    user.userPassword = await bcrypt.hash(user.userPassword,salt);
+
+    //Saving User object in Db
+    await user.save();
+
+    //If User is successfully registered we are returning token in the header
+    const token = user.generateUserToken();
+    res.header('x-auth-token',token).send(_.pick(user,['userName','userFamily','userEmail','userPicture']));
+})
+
+module.exports=router;
