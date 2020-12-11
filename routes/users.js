@@ -31,4 +31,25 @@ router.post('/',async(req, res) => {
     res.header('x-auth-token',token).send(_.pick(user,['userName','userFamily','userEmail','userPicture']));
 })
 
+
+router.get('/',async (req, res) => {
+    const users = await User.find().sort('userName');
+    if(!users) return res.status(404).send("There are no Users registered in the DB!");
+    res.send(users);
+})
+
+
+router.get('/:id',async (req, res) => {
+    const user = await User.findById(req.params.id);
+    if(!user) return res.status(404).send('User with the given ID was not found!');
+    res.send(user);
+})
+
+
+router.get('/usr-me',async (req, res) => {
+    const user = await User.findById(req.user._id).select('-password');
+    res.send(user);
+})
+
+
 module.exports=router;

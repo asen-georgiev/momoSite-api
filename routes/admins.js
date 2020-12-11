@@ -32,4 +32,26 @@ router.post('/',async(req, res) => {
     res.header('x-auth-token',token).send(_.pick(admin,['_id','adminName','adminEmail','isAdmin']));
 })
 
+
+//Showing the current admin user
+router.get('/adm-me',async (req, res) => {
+    const admin = await Admin.findById(req.admin._id).select('-password');
+    res.send(admin);
+})
+
+
+//Retrieving all admin users from DB
+router.get('/',async (req, res) => {
+    const admins = await Admin.find().sort('adminName');
+    res.send(admins);
+})
+
+
+//Retrieving single admin user by ID
+router.get('/:id',async (req, res) => {
+    const admin = await Admin.findById(req.params.id);
+    if(!admin) return res.status(404).send('Admin with the given ID was not found!');
+    res.send(admin);
+})
+
 module.exports=router;

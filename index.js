@@ -3,6 +3,8 @@ const app = express();
 const winston = require("winston");
 
 
+
+require('dotenv').config();
 require('./startup/db')();
 require('./startup/cors')(app);
 require('./startup/config')();
