@@ -54,4 +54,34 @@ router.get('/:id',async (req, res) => {
     res.send(admin);
 })
 
+
+
+router.put('/:id',async (req, res) => {
+    const {error} = validateAdmin(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    const salt = await bcrypt.genSalt(10);
+
+    const admin = await Admin.findByIdAndUpdate(req.params.id,{
+        adminName: req.body.adminName,
+        adminEmail: req.body.adminEmail,
+        adminPassword: req.body.adminPassword,
+        isAdmin: req.body.isAdmin
+    },
+        {new:true});
+
+    if(!admin) return res.status(404).send("The admin with the given ID was not found!");
+    res.send(admin);
+})
+
+
+router.delete('/:id', async (req, res) => {
+    const admin = await Admin.findByIdAndDelete(req.params.id);
+    if(!admin) return res.status(404).send('Admin with the given ID was not found!');
+    res.send(admin);
+})
+
+
+
+
 module.exports=router;
