@@ -2,7 +2,16 @@ const express = require("express");
 const router = express.Router();
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
+const authorization = require("../middleware/authorization");
 const{Admin,validateAdmin} = require('../models/admin');
+
+
+
+//Showing the current admin user
+router.get('/adm', authorization, async (req, res) => {
+    const admin = await Admin.findById(req.user._id).select('-password');
+    res.send(admin);
+})
 
 
 
@@ -33,12 +42,6 @@ router.post('/',async(req, res) => {
 })
 
 
-//Showing the current admin user
-router.get('/adm-me',async (req, res) => {
-    const admin = await Admin.findById(req.admin._id).select('-password');
-    res.send(admin);
-})
-
 
 //Retrieving all admin users from DB
 router.get('/',async (req, res) => {
@@ -53,7 +56,6 @@ router.get('/:id',async (req, res) => {
     if(!admin) return res.status(404).send('Admin with the given ID was not found!');
     res.send(admin);
 })
-
 
 
 router.put('/:id',async (req, res) => {
@@ -80,7 +82,6 @@ router.delete('/:id', async (req, res) => {
     if(!admin) return res.status(404).send('Admin with the given ID was not found!');
     res.send(admin);
 })
-
 
 
 

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
+const authorization = require("../middleware/authorization");
 const{User, validateUser} = require('../models/user');
 
 
@@ -46,7 +47,34 @@ router.get('/:id',async (req, res) => {
 })
 
 
-router.get('/usr-me',async (req, res) => {
+router.put('/:id', async (req, res) => {
+    const {error} = validateUser(req.body);
+    if(error) return res.status(400).send(error.details[0].message);
+
+    const salt = await bcrypt.genSalt(10);
+
+    const user = await User.findByIdAndUpdate(req.params.id,{
+        userName : req.body.userName,
+        userFamily : req.body.userFamily,
+        userEmail : req.body.userEmail,
+        userPassword : req.body.userPassword,
+        userPicture: req.body.userPicture
+    },
+        {new: true});
+
+    if(!user) return res.status(404).send("The use with the given ID was not found");
+    res.send(user);
+})
+
+
+router.delete('/:id', async (req, res) => {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if(!user) return res.status(404).send('User with the given ID was not found!');
+    res.send(user);
+})
+
+
+router.get('/usr', authorization,async (req, res) => {
     const user = await User.findById(req.user._id).select('-password');
     res.send(user);
 })
