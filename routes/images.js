@@ -1,10 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const multer = require("multer");
+const authorization = require("../middleware/authorization");
 const {Upload,getImagesFromDirectory} = require('../models/image');
 
 //Post request for uploadin images to Gallery folder
-router.post('/',(req, res) => {
+router.post('/',authorization,(req, res) => {
     Upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {
             return res.status(500).json(err)

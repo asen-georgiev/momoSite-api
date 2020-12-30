@@ -33,6 +33,18 @@ const userSchema = new mongoose.Schema({
         required: true,
         minlength: 5,
         maxlength: 100
+    },
+    userAddress: {
+        type: String,
+        required: true,
+        minlength: 5,
+        maxlength: 100
+    },
+    userTelephone: {
+        type: String,
+        required: true,
+        minlength: 5,
+        maxlength: 50
     }
 })
 
@@ -43,7 +55,9 @@ userSchema.methods.generateUserToken = function () {
             userName: this.userName,
             userFamily: this.userFamily,
             userEmail: this.userEmail,
-            userPicture: this.userPicture
+            userPicture: this.userPicture,
+            userAddress: this.userAddress,
+            userTelephone: this.userTelephone
         },
         config.get('jwtPrivateKey'));
     return token;
@@ -59,7 +73,9 @@ function validateUser(user){
         userFamily: Joi.string().required().min(3).max(30),
         userPassword: Joi.string().required().min(8).max(255),
         userEmail: Joi.string().required().min(5).max(50),
-        userPicture: Joi.string().required().min(5).max(100)
+        userPicture: Joi.string().required().min(5).max(100),
+        userAddress: Joi.string().required().min(5).max(100),
+        userTelephone: Joi.string().required().min(5).max(50)
     });
     return schema.validate(user);
 }

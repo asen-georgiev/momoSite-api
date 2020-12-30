@@ -18,7 +18,8 @@ router.post('/',async(req, res) => {
     if(user) return res.status(409).send(`User with an email: ${reqEmail} already exists!`);
 
     //Creating User object
-    user = new User(_.pick(req.body,['userName','userFamily','userEmail','userPassword','userPicture']));
+    user = new User(_.pick(req.body,
+        ['userName','userFamily','userEmail','userPassword','userPicture','userAddress','userTelephone']));
 
     //Generating salt from bcrypt
     const salt = await bcrypt.genSalt(10);
@@ -29,7 +30,8 @@ router.post('/',async(req, res) => {
 
     //If User is successfully registered we are returning token in the header
     const token = user.generateUserToken();
-    res.header('x-auth-token',token).send(_.pick(user,['userName','userFamily','userEmail','userPicture']));
+    res.header('x-auth-token',token).send(_.pick(user,
+        ['userName','userFamily','userEmail','userPicture','userAddress','userTelephone']));
 })
 
 
@@ -58,7 +60,9 @@ router.put('/:id', async (req, res) => {
         userFamily : req.body.userFamily,
         userEmail : req.body.userEmail,
         userPassword : req.body.userPassword,
-        userPicture: req.body.userPicture
+        userPicture: req.body.userPicture,
+        userAddress: req.body.userAddress,
+        userTelephone: req.body.userTelephone
     },
         {new: true});
 
