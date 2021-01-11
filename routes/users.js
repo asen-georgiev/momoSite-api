@@ -59,7 +59,7 @@ router.put('/:id', async (req, res) => {
         userName : req.body.userName,
         userFamily : req.body.userFamily,
         userEmail : req.body.userEmail,
-        userPassword : req.body.userPassword,
+        userPassword : await bcrypt.hash(req.body.userPassword,salt),
         userPicture: req.body.userPicture,
         userAddress: req.body.userAddress,
         userTelephone: req.body.userTelephone

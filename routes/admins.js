@@ -67,7 +67,7 @@ router.put('/:id',async (req, res) => {
     const admin = await Admin.findByIdAndUpdate(req.params.id,{
         adminName: req.body.adminName,
         adminEmail: req.body.adminEmail,
-        adminPassword: req.body.adminPassword,
+        adminPassword: await bcrypt.hash(req.body.adminPassword,salt),
         isAdmin: req.body.isAdmin
     },
         {new:true});
