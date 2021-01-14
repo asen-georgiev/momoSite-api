@@ -38,7 +38,7 @@ router.post('/',async(req, res) => {
 
     //If admin is successfully registered we are returning token in the header
     const token = admin.generateAdminToken();
-    res.header('x-auth-token',token).send(_.pick(admin,['_id','adminName','adminEmail','isAdmin']));
+    res.header('x-auth-token',token).send(token);
 })
 
 

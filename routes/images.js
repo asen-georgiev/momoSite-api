@@ -5,7 +5,7 @@ const authorization = require("../middleware/authorization");
 const {Upload,getImagesFromDirectory} = require('../models/image');
 
 //Post request for uploadin images to Gallery folder
-router.post('/',authorization,(req, res) => {
+router.post('/',(req, res) => {
     Upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {
             return res.status(500).json(err)

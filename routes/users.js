@@ -30,8 +30,7 @@ router.post('/',async(req, res) => {
 
     //If User is successfully registered we are returning token in the header
     const token = user.generateUserToken();
-    res.header('x-auth-token',token).send(_.pick(user,
-        ['userName','userFamily','userEmail','userPicture','userAddress','userTelephone']));
+    res.header('x-auth-token',token).send(token);
 })
 
 
