@@ -15,6 +15,7 @@ const storage = multer.diskStorage({
     }
 });
 
+//Upload array of files not signle one only.
 const Upload = multer({storage: storage}).array('file');
 
 //Get Array of Images from the directory folder
