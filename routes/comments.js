@@ -24,12 +24,14 @@ router.post('/',async(req, res) => {
             userFamily: user.userFamily,
             userEmail: user.userEmail,
             userPicture: user.userPicture,
-            userPassword: user.userPassword
+            userPassword: user.userPassword,
+            userAddress: user.userAddress,
+            userTelephone: user.userTelephone
         }
     });
 
     await comment.save()
-    res.send(_.pick(comment,['commentText']));
+    res.send(_.pick(comment,['commentText','user.userName','user.userFamily','user.userPicture']));
 })
 
 module.exports=router;

@@ -34,6 +34,7 @@ router.post('/',async(req, res) => {
 })
 
 
+//Getting all the users
 router.get('/',async (req, res) => {
     const users = await User.find().sort('userName');
     if(!users) return res.status(404).send("There are no Users registered in the DB!");
@@ -41,6 +42,7 @@ router.get('/',async (req, res) => {
 })
 
 
+//Getting single user
 router.get('/:id',async (req, res) => {
     const user = await User.findById(req.params.id);
     if(!user) return res.status(404).send('User with the given ID was not found!');
@@ -48,6 +50,7 @@ router.get('/:id',async (req, res) => {
 })
 
 
+//Updating user by user and admin - only authorisation needed.
 router.put('/:id', async (req, res) => {
     const {error} = validateUser(req.body);
     if(error) return res.status(400).send(error.details[0].message);
