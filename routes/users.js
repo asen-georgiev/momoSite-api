@@ -4,6 +4,9 @@ const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const authorization = require("../middleware/authorization");
 const{User, validateUser} = require('../models/user');
+const sendGrid = require("@sendgrid/mail");
+
+const apiKey = process.env.SENDGRID_API_KEY;
 
 
 //Async function for creating User
@@ -68,9 +71,60 @@ router.put('/:id', async (req, res) => {
     },
         {new: true});
 
-    if(!user) return res.status(404).send("The use with the given ID was not found");
+    if(!user) return res.status(404).send("The user with the given ID was not found");
     res.send(user);
 })
+
+
+//Updating password when the user is dumb enough to forget it
+router.put('/pass/update', async(req, res) => {
+
+    function makePass() {
+        let password = '';
+        let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let charactersLength = characters.length;
+        for (let i = 0; i < 9; i++) {
+            password += characters.charAt(Math.floor(Math.random() * charactersLength));
+        }
+        return password;
+    }
+
+    const newPassword = makePass();
+
+    const user = await User.findOneAndUpdate({userEmail: req.body.userEmail},{
+        $set: {userPassword: newPassword}},{new:true})
+
+    sendGrid.setApiKey(apiKey);
+    const msg = {
+        to: req.body.userEmail,
+        from: "empyrean1981@abv.bg",
+        subject: "Recover password",
+        text: "Thank you, for your e-mail, we will contact you soon!",
+        html:`<div>
+                <h5>Hello,</h5>
+                <p>This is your new user password :</p>
+                <span><b>${newPassword}</b></span>
+                <p>Use the link below to go to our login page :</p>
+                <span><a href="http://localhost:3000/userlogin">User login</a></span>
+            </div>`
+    };
+    sendGrid
+        .send(msg)
+        .then(() => {
+            console.log('Email sent successfully!');
+            res.status(200).send(user);
+        })
+        .catch((error) => {
+            res.status(401).send('There was an error sending the email through API.');
+            console.log(error);
+        });
+
+
+
+    // if(!user) return res.status(404).send("test");
+    // res.send(user);
+})
+
 
 
 router.delete('/:id', async (req, res) => {

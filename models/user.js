@@ -6,43 +6,43 @@ const config = require("config");
 const userSchema = new mongoose.Schema({
     userName: {
         type: String,
-        required: true,
+        // required: true,
         minlength: 3,
         maxlength: 30
     },
     userFamily: {
         type: String,
-        required: true,
+        // required: true,
         minlength: 3,
         maxlength: 30
     },
     userPassword: {
         type: String,
-        required: true,
+        // required: true,
         minlength: 8,
         maxlength: 1024
     },
     userEmail: {
         type: String,
-        required: true,
+        // required: true,
         minlength: 5,
         maxlength: 50
     },
     userPicture: {
         type: String,
-        required: true,
+        // required: true,
         minlength: 5,
         maxlength: 100
     },
     userAddress: {
         type: String,
-        required: true,
+        // required: true,
         minlength: 5,
         maxlength: 100
     },
     userTelephone: {
         type: String,
-        required: true,
+        // required: true,
         minlength: 5,
         maxlength: 50
     }
