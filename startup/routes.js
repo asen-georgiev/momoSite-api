@@ -6,6 +6,7 @@ const images = require('../routes/images');
 const adminauthent = require('../routes/adminAuthent');
 const userauthent = require('../routes/userAuthent');
 const emails = require('../routes/emails');
+const bios = require('../routes/bios');
 
 
 module.exports = function (app) {
@@ -14,6 +15,7 @@ module.exports = function (app) {
     app.use(express.static('gallery'));
     app.use('/api/admins',admins);
     app.use('/api/users',users);
+    app.use('/api/bios',bios);
     app.use('/api/comments',comments);
     app.use('/api/emails',emails);
     app.use('/api/images',images);
