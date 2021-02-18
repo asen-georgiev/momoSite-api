@@ -11,13 +11,12 @@ router.post('/', async(req, res) => {
 
     let bio = await Bio.findOne({bioTitle: req.body.bioTitle});
     const reqBioTitle = req.body.bioTitle;
-    if(bio) return res.status(409).send(`Biography with ${reqBioTitle} already exists`);
+    if(bio) return res.status(409).send(`Biography with ${reqBioTitle} already exists.`);
 
     bio = new Bio(_.pick(req.body,['bioTitle','bioText','bioPictures']));
     await bio.save();
     res.send(bio);
 })
-
 
 
 router.get('/', async(req, res) => {
