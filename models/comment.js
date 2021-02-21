@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const ObjectId = mongoose.Schema.Types.ObjectId;
 const Joi = require("joi");
 const{userSchema} = require('./user');
 
@@ -12,6 +13,10 @@ const commentSchema = new mongoose.Schema({
     user:{
         type: userSchema,
         required: true
+    },
+    blog: {
+        type: ObjectId,
+        required: true
     }
 })
 
@@ -22,7 +27,8 @@ const Comment = mongoose.model('Comment',commentSchema);
 function validateComment(comment){
     const schema = Joi.object({
         commentText: Joi.string().required().min(10).max(1000),
-        userId: Joi.objectId().required()
+        userId: Joi.objectId().required(),
+        blogId: Joi.objectId().required()
     });
     return schema.validate(comment);
 }

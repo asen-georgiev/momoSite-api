@@ -27,11 +27,18 @@ router.post('/',async(req, res) => {
             userPassword: user.userPassword,
             userAddress: user.userAddress,
             userTelephone: user.userTelephone
-        }
+        },
+        blog:req.body.blogId
     });
 
     await comment.save()
-    res.send(_.pick(comment,['commentText','user.userName','user.userFamily','user.userPicture']));
+    res.send(_.pick(comment,['commentText','user.userName','user.userFamily','user.userPicture','blog']));
+})
+
+
+router.get('/', async(req, res) => {
+    const comments = await Comment.find({blog:req.body.blogId});
+    res.send(comments)
 })
 
 module.exports=router;
