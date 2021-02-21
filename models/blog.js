@@ -41,7 +41,7 @@ function validateBlog(blog) {
         blogTitle: Joi.string().required().min(5).max(100),
         blogSubTitle: Joi.string().required().min(5).max(100),
         blogText: Joi.string().required().min(20).max(2000),
-        blogPictures: Joi.array().items(Joi.string()).required(),
+        blogPictures: Joi.array().items(Joi.string()).allow(''),
         blogLink: Joi.string().min(5).max(50).allow('')
     });
     return schema.validate(blog);
