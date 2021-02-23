@@ -36,9 +36,37 @@ router.post('/',async(req, res) => {
 })
 
 
-router.get('/', async(req, res) => {
-    const comments = await Comment.find({blog:req.body.blogId});
-    res.send(comments)
+//Retrieving all comments by BLOG
+router.get('/by-blog/:id', async(req, res) => {
+    const comments = await Comment.find({blog:req.params.id});
+    let reqBlogId = req.params.id;
+    if(!comments) return res.status(404).send(`There are NO comments for Blog with ID : ${reqBlogId}`);
+    res.send(comments);
 })
+
+
+//Retrieving all comments by USER
+router.get('/by-user/:id',async(req, res) => {
+    const comments = await Comment.find({"user._id":req.params.id});
+    let reqUserId = req.params.id;
+    if(!comments) return res.status(404).send(`There are NO comments from User with ID : ${reqUserId}`);
+    res.send(comments);
+})
+
+//Retrieving all comments
+router.get('/', async(req, res) => {
+    const comments = await Comment.find().sort('blog');
+    res.send(comments);
+})
+
+
+router.delete('/:id',async(req, res) => {
+    const comment = await Comment.findByIdAndDelete(req.params.id);
+    let reqCommentId = req.params.id;
+    if(!comment) return res.status(404).send(`Blog with ID : ${reqCommentId} was not found!`);
+    res.send(comment);
+})
+
+
 
 module.exports=router;

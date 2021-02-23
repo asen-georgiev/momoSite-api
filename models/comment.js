@@ -10,6 +10,11 @@ const commentSchema = new mongoose.Schema({
         minlength: 10,
         maxlength: 1000
     },
+    commentDate:{
+        type: Date,
+        default: Date.now,
+        required: true
+    },
     user:{
         type: userSchema,
         required: true
