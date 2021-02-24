@@ -89,10 +89,13 @@ router.put('/pass/update', async(req, res) => {
         return password;
     }
 
+    const salt = await bcrypt.genSalt(10);
+
     const newPassword = makePass();
+    const password = await bcrypt.hash(newPassword,salt);
 
     const user = await User.findOneAndUpdate({userEmail: req.body.userEmail},{
-        $set: {userPassword: newPassword}},{new:true})
+        $set: {userPassword: password}},{new:true})
 
     sendGrid.setApiKey(apiKey);
     const msg = {
