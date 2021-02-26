@@ -8,6 +8,7 @@ const userauthent = require('../routes/userAuthent');
 const emails = require('../routes/emails');
 const bios = require('../routes/bios');
 const blogs = require('../routes/blogs');
+const designs = require('../routes/designs');
 
 
 module.exports = function (app) {
@@ -19,6 +20,7 @@ module.exports = function (app) {
     app.use('/api/bios',bios);
     app.use('/api/blogs',blogs);
     app.use('/api/comments',comments);
+    app.use('/api/designs',designs);
     app.use('/api/emails',emails);
     app.use('/api/images',images);
     app.use('/api/adminauthent',adminauthent);
