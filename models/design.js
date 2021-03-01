@@ -10,7 +10,6 @@ const designSchema = new mongoose.Schema({
     },
     designText: {
         type: String,
-        minlength: 10,
         maxlength: 100
     },
     designPictures: {
