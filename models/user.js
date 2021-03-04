@@ -75,7 +75,7 @@ function validateUser(user){
         userEmail: Joi.string().required().min(5).max(50),
         userPicture: Joi.string().required().min(5).max(100),
         userAddress: Joi.string().required().min(5).max(100),
-        userTelephone: Joi.string().required().min(5).max(50)
+        userTelephone: Joi.string().required().min(5).max(50).pattern(new RegExp('[0-9]'))
     });
     return schema.validate(user);
 }
