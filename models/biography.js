@@ -26,7 +26,7 @@ function validateBio(bio){
     const schema = Joi.object({
         bioTitle: Joi.string().required().min(5).max(100),
         bioText: Joi.string().required().min(10).max(1024),
-        bioPictures: Joi.array().items(Joi.string()).required()
+        bioPictures: Joi.array().items(Joi.string().required()).required()
     });
     return schema.validate(bio);
 }
