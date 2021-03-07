@@ -10,7 +10,7 @@ const designSchema = new mongoose.Schema({
     },
     designText: {
         type: String,
-        maxlength: 100
+        maxlength: 200
     },
     designPictures: {
         type: [String],
@@ -23,8 +23,8 @@ const Design = mongoose.model('Design',designSchema);
 function validateDesign(design){
     const schema = Joi.object({
         designTitle: Joi.string().required().min(5).max(100),
-        designText: Joi.string().allow('').min(10).max(100),
-        designPictures: Joi.array().items(Joi.string())
+        designText: Joi.string().allow('').min(10).max(200),
+        designPictures: Joi.array().items(Joi.string().required()).required()
     });
     return schema.validate(design);
 }
