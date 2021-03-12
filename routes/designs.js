@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
     const reqDesignTitle = req.body.designTitle;
     if (design) return res.status(409).send(`Design with title : ${reqDesignTitle} already exists!`);
 
-    design = new Design(_.pick(req.body, ['designTitle', 'designText', 'designPictures']));
+    design = new Design(_.pick(req.body, ['designTitle', 'designText', 'designPictures','designType']));
     await design.save();
     res.send(design);
 })
@@ -38,7 +38,8 @@ router.put('/:id', async (req, res) => {
     const design = await Design.findByIdAndUpdate(req.params.id, {
         designTitle: req.body.designTitle,
         designText: req.body.designText,
-        designPictures: req.body.designPictures
+        designPictures: req.body.designPictures,
+        designType: req.body.designType
     }, {new: true});
 
     if (!design) return res.status(404).send('Design with the given ID was not found!');
