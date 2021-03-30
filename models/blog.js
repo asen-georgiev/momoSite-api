@@ -11,7 +11,7 @@ const blogSchema = new mongoose.Schema({
     blogSubTitle: {
         type: String,
         minlength:5,
-        maxlength: 200,
+        maxlength: 300,
         required: true
     },
     blogText: {
@@ -39,7 +39,7 @@ const Blog = mongoose.model('Blog', blogSchema);
 function validateBlog(blog) {
     const schema = Joi.object({
         blogTitle: Joi.string().required().min(5).max(100),
-        blogSubTitle: Joi.string().required().min(5).max(200),
+        blogSubTitle: Joi.string().required().min(5).max(300),
         blogText: Joi.string().required().min(20).max(5000),
         blogPictures: Joi.array().items(Joi.string()).allow(''),
         blogLink: Joi.string().min(5).max(50).allow('')
