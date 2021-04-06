@@ -1,3 +1,6 @@
-{
-  "jwtPrivateKey": "momosite_jwtPrivateKey"
+ {
+  "jwtPrivateKey": "momosite_jwtPrivateKey",
+   "db": "momo_db"
 }
+
+
