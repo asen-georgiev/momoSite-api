@@ -3,20 +3,21 @@ const router = express.Router();
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const authorization = require("../middleware/authorization");
+const administration = require("../middleware/administration");
 const{Admin,validateAdmin} = require('../models/admin');
 
 
 
-//Showing the current admin user
-router.get('/adm', authorization, async (req, res) => {
+//Showing the current Admin user - admin rights only
+router.get('/adm', [authorization,administration], async (req, res) => {
     const admin = await Admin.findById(req.user._id).select('-password');
     res.send(admin);
 })
 
 
 
-//Async function for creating Admin
-router.post('/',async(req, res) => {
+//Creating Admin object - admin rights only
+router.post('/',[authorization,administration],async(req, res) => {
     //Validating the input data by the JOI function
     const {error} = validateAdmin(req.body);
     if(error) return res.status(400).send(error.details[0].message);
@@ -43,22 +44,23 @@ router.post('/',async(req, res) => {
 
 
 
-//Retrieving all admin users from DB
-router.get('/',async (req, res) => {
+//Retrieving all Admin users from DB - admin rights only
+router.get('/',[authorization,administration],async (req, res) => {
     const admins = await Admin.find().sort('adminName');
     res.send(admins);
 })
 
 
-//Retrieving single admin user by ID
-router.get('/:id',async (req, res) => {
+//Retrieving single Admin user by ID - admin rights only
+router.get('/:id',[authorization,administration],async (req, res) => {
     const admin = await Admin.findById(req.params.id);
     if(!admin) return res.status(404).send('Admin with the given ID was not found!');
     res.send(admin);
 })
 
 
-router.put('/:id',async (req, res) => {
+//Updating single Admin object - admin rights only
+router.put('/:id',[authorization,administration],async (req, res) => {
     const {error} = validateAdmin(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -77,7 +79,8 @@ router.put('/:id',async (req, res) => {
 })
 
 
-router.delete('/:id', async (req, res) => {
+//Deleting single Admin object - admin right only
+router.delete('/:id',[authorization,administration],async (req, res) => {
     const admin = await Admin.findByIdAndDelete(req.params.id);
     if(!admin) return res.status(404).send('Admin with the given ID was not found!');
     res.send(admin);

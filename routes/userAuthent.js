@@ -5,7 +5,8 @@ const Joi = require('joi');
 const {User, validateUser} = require('../models/user');
 
 
-//Route for User authentication at login
+//User authentication route - If the User object is Valid in DB -
+//We return generated token back to Frontend.
 router.post('/',async(req, res) => {
     //Function for validating the input data from the User login
     const {error} = validateUserAuthent(req.body);

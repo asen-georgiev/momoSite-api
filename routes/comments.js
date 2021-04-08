@@ -3,10 +3,12 @@ const router = express.Router();
 const _ = require('lodash');
 const{Comment,validateComment} = require('../models/comment');
 const{User, validateUser} = require('../models/user');
+const authorization = require("../middleware/authorization");
+const administration = require("../middleware/administration");
 
 
-//Async function for creating Comment
-router.post('/',async(req, res) => {
+//Creating single Comment object - user rights only.
+router.post('/',authorization,async(req, res) => {
     //Validating input data from JOI function
     const {error} = validateComment(req.body);
     if(error) return res.status(400).send(error.details[0].message);
@@ -36,7 +38,7 @@ router.post('/',async(req, res) => {
 })
 
 
-//Retrieving all comments by BLOG
+//Retrieving all comments by Blog ID - no token needed.
 router.get('/by-blog/:id', async(req, res) => {
     const comments = await Comment.find({blog:req.params.id});
     let reqBlogId = req.params.id;
@@ -45,28 +47,28 @@ router.get('/by-blog/:id', async(req, res) => {
 })
 
 
-//Retrieving all comments by USER
-router.get('/by-user/:id',async(req, res) => {
+//Retrieving all comments by User ID - user rights only.
+router.get('/by-user/:id',authorization,async(req, res) => {
     const comments = await Comment.find({"user._id":req.params.id});
     let reqUserId = req.params.id;
     if(!comments) return res.status(404).send(`There are NO comments from User with ID : ${reqUserId}`);
     res.send(comments);
 })
 
-//Retrieving all comments
-router.get('/', async(req, res) => {
+//Retrieving all the Comment objects fom DB - admin rights only.
+router.get('/',[authorization,administration],async(req, res) => {
     const comments = await Comment.find().sort('blog');
     res.send(comments);
 })
 
 
-router.delete('/:id',async(req, res) => {
+//Deleting single Comment object from DB - admin rights only.
+router.delete('/:id',[authorization,administration],async(req, res) => {
     const comment = await Comment.findByIdAndDelete(req.params.id);
     let reqCommentId = req.params.id;
     if(!comment) return res.status(404).send(`Blog with ID : ${reqCommentId} was not found!`);
     res.send(comment);
 })
-
 
 
 module.exports=router;

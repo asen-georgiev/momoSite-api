@@ -3,13 +3,14 @@ const router = express.Router();
 const _ = require('lodash');
 const bcrypt = require('bcrypt');
 const authorization = require("../middleware/authorization");
+const administration = require("../middleware/administration");
 const{User, validateUser} = require('../models/user');
 const sendGrid = require("@sendgrid/mail");
 
 const apiKey = process.env.SENDGRID_API_KEY;
 
 
-//Async function for creating User
+//Async function for creating User object - no token needed.
 router.post('/',async(req, res) => {
     //Validating input data from JOI function
     const {error} = validateUser(req.body);
@@ -37,24 +38,24 @@ router.post('/',async(req, res) => {
 })
 
 
-//Getting all the users
-router.get('/',async (req, res) => {
+//Retieving all the User objects from DB - admin rights only.
+router.get('/',[authorization,administration],async (req, res) => {
     const users = await User.find().sort('userName');
     if(!users) return res.status(404).send("There are no Users registered in the DB!");
     res.send(users);
 })
 
 
-//Getting single user
-router.get('/:id',async (req, res) => {
+//Retrieving single User object from DB by User and Admin - only authorization needed.
+router.get('/:id',authorization,async (req, res) => {
     const user = await User.findById(req.params.id);
     if(!user) return res.status(404).send('User with the given ID was not found!');
     res.send(user);
 })
 
 
-//Updating user by user and admin - only authorisation needed.
-router.put('/:id', async (req, res) => {
+//Updating single User object by User and Admin - only authorization needed.
+router.put('/:id',authorization,async (req, res) => {
     const {error} = validateUser(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
@@ -108,7 +109,7 @@ router.put('/pass/update', async(req, res) => {
                 <p>This is your new user password :</p>
                 <span><b>${newPassword}</b></span>
                 <p>Use the link below to go to our login page :</p>
-                <span><a href="http://localhost:3000/userlogin">User login</a></span>
+                <span><a href="https://momo-design.herokuapp.com/userlogin">User login</a></span>
             </div>`
     };
     sendGrid
@@ -129,14 +130,15 @@ router.put('/pass/update', async(req, res) => {
 })
 
 
-
-router.delete('/:id', async (req, res) => {
+//Deleting single User object by User and Admin - only authorization needed.
+router.delete('/:id',authorization,async (req, res) => {
     const user = await User.findByIdAndDelete(req.params.id);
     if(!user) return res.status(404).send('User with the given ID was not found!');
     res.send(user);
 })
 
 
+//Retrieving the current User.
 router.get('/usr', authorization,async (req, res) => {
     const user = await User.findById(req.user._id).select('-password');
     res.send(user);

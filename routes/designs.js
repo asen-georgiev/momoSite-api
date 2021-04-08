@@ -2,9 +2,12 @@ const express = require("express");
 const router = express.Router();
 const _ = require('lodash');
 const {Design, validateDesign} = require("../models/design");
+const authorization = require("../middleware/authorization");
+const administration = require("../middleware/administration");
 
 
-router.post('/', async (req, res) => {
+//Creating single Design object - admin rights only.
+router.post('/',[authorization,administration],async (req, res) => {
     const {error} = validateDesign(req.body);
     if (error) return res.status(404).send(error.details[0].message);
 
@@ -18,12 +21,14 @@ router.post('/', async (req, res) => {
 })
 
 
+//Retrieving all Designs from DB - no token needed.
 router.get('/', async (req, res) => {
     const designs = await Design.find();
     res.send(designs);
 })
 
 
+//Retrieving single Design object from DB - no token needed.
 router.get('/:id', async (req, res) => {
     const design = await Design.findById(req.params.id);
     if (!design) return res.status(404).send('Design with the given ID was not found!');
@@ -31,7 +36,8 @@ router.get('/:id', async (req, res) => {
 })
 
 
-router.put('/:id', async (req, res) => {
+//Updating single Design object - admin rights only.
+router.put('/:id',[authorization,administration],async (req, res) => {
     const {error} = validateDesign(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -46,7 +52,8 @@ router.put('/:id', async (req, res) => {
 })
 
 
-router.delete('/:id', async (req, res) => {
+//Deleting single Design object - admin rights only.
+router.delete('/:id',[authorization,administration], async (req, res) => {
     const design = await Design.findByIdAndDelete(req.params.id);
     let reqDesignId = req.params.id;
     if (!design) return res.status(404).send(`Design with ID : ${reqDesignId} was not founf!`);

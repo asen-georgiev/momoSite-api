@@ -3,8 +3,10 @@ const router = express.Router();
 const multer = require("multer");
 const authorization = require("../middleware/authorization");
 const {Upload,getImagesFromDirectory} = require('../models/image');
+const administration = require("../middleware/administration");
 
-//Post request for uploading images to Gallery folder
+//Post request for uploading images to Gallery folder - no token needed.
+//Because of the case of User registration.
 router.post('/',(req, res) => {
     Upload(req, res, function (err) {
         if (err instanceof multer.MulterError) {
@@ -16,8 +18,8 @@ router.post('/',(req, res) => {
     });
 })
 
-//Get request for retrieving images from gallery
-router.get('/',(req, res) => {
+//Retrieving all the Images from gallery - admin rights only.
+router.get('/',[authorization,administration],(req, res) => {
     let images = getImagesFromDirectory( 'gallery');
     res.send(images);
 })

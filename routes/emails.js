@@ -3,10 +3,12 @@ const router = express.Router();
 const sendGrid = require("@sendgrid/mail");
 const {Email,validateEmail} = require('../models/email');
 const _ = require('lodash');
-
+const authorization = require("../middleware/authorization");
+const administration = require("../middleware/administration");
 
 const apiKey = process.env.SENDGRID_API_KEY;
 
+//Creating single Email object, sending email through SendGrid - no token needed.
 router.post('/', async(req, res) => {
     const {error} = validateEmail(req.body);
     if(error) return res.status(400).send(error.details[0].message);
@@ -37,13 +39,15 @@ router.post('/', async(req, res) => {
 });
 
 
-router.get('/',async(req, res) => {
+//Retrieving all the Email objects from DB - admin rights only.
+router.get('/',[authorization,administration],async(req, res) => {
     const emails = await Email.find().sort('-_id');
     res.send(emails);
 });
 
 
-router.delete('/:id', async(req, res) => {
+//Deleting single Email object from DB - admin rights only.
+router.delete('/:id',[authorization,administration], async(req, res) => {
     const email = await Email.findByIdAndDelete(req.params.id);
     let reqId = req.params.id;
     if(!email) return res.status(404).send(`Email with ID: ${reqId} was not found!`);

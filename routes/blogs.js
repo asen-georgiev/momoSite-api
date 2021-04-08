@@ -2,10 +2,12 @@ const express = require("express");
 const router = express.Router();
 const _ = require('lodash');
 const {Blog, validateBlog} = require("../models/blog");
+const authorisation = require("../middleware/authorization");
+const administration = require("../middleware/administration");
 
 
-
-router.post('/', async(req, res) => {
+//Creating single Blog object - admin rights only.
+router.post('/',[authorisation,administration],async(req, res) => {
     const {error} = validateBlog(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
@@ -19,12 +21,14 @@ router.post('/', async(req, res) => {
 })
 
 
+//Retrieving all the Blog objects from the DB - no token needed.
 router.get('/',async(req, res) => {
     const blogs = await Blog.find().sort('_id');
     res.send(blogs);
 })
 
 
+//Retrieving single Blog object from the DB - no token needed.
 router.get('/:id', async(req, res) => {
     const blog = await Blog.findById(req.params.id);
     if(!blog) return res.status(404).send('Blog with the given ID was not found!');
@@ -32,7 +36,8 @@ router.get('/:id', async(req, res) => {
 })
 
 
-router.put('/:id', async(req, res) => {
+//Updating single Blog object - admin rights only.
+router.put('/:id',[authorisation,administration], async(req, res) => {
     const {error} = validateBlog(req.body);
     if(error) return res.status(400).send(error.details[0].message);
 
@@ -48,7 +53,8 @@ router.put('/:id', async(req, res) => {
 })
 
 
-router.delete('/:id',async(req, res) => {
+//Deleting single Blog object - admin rights only.
+router.delete('/:id',[authorisation,administration],async(req, res) => {
     const blog = await Blog.findByIdAndDelete(req.params.id);
     let reqBlogId = req.params.id;
     if(!blog) return res.status(404).send(`Blog with ID : ${reqBlogId} was not found!`);
