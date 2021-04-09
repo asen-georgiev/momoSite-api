@@ -62,8 +62,8 @@ router.get('/',[authorization,administration],async(req, res) => {
 })
 
 
-//Deleting single Comment object from DB - admin rights only.
-router.delete('/:id',[authorization,administration],async(req, res) => {
+//Deleting single Comment object from DB - authorization only.
+router.delete('/:id',authorization,async(req, res) => {
     const comment = await Comment.findByIdAndDelete(req.params.id);
     let reqCommentId = req.params.id;
     if(!comment) return res.status(404).send(`Blog with ID : ${reqCommentId} was not found!`);
