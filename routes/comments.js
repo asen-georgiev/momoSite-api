@@ -71,4 +71,29 @@ router.delete('/:id',authorization,async(req, res) => {
 })
 
 
+//Updating single Comment object from DB - authorization only.
+router.put('/:id',authorization,async(req, res) => {
+    // const {error} = validateComment(req.body);
+    // if(error) return res.status(400).send(error.details[0].message);
+
+
+    const comment = await Comment.findByIdAndUpdate(req.params.id,{
+        commentText: req.body.commentText,
+        user: {
+            _id: req.body.user._id,
+            userName: req.body.user.userName,
+            userFamily: req.body.user.userFamily,
+            userEmail: req.body.user.userEmail,
+            userPicture: req.body.user.userPicture,
+            userPassword: req.body.user.userPassword,
+            userAddress: req.body.user.userAddress,
+            userTelephone: req.body.user.userTelephone
+        },
+        blog: req.body.blog
+    },{new:true});
+
+    if(!comment) return res.status(404).send('Comment with the given ID was not found!');
+})
+
+
 module.exports=router;
