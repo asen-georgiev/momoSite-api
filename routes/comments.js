@@ -66,7 +66,7 @@ router.get('/',[authorization,administration],async(req, res) => {
 router.delete('/:id',authorization,async(req, res) => {
     const comment = await Comment.findByIdAndDelete(req.params.id);
     let reqCommentId = req.params.id;
-    if(!comment) return res.status(404).send(`Blog with ID : ${reqCommentId} was not found!`);
+    if(!comment) return res.status(404).send(`Comment with ID : ${reqCommentId} was not found!`);
     res.send(comment);
 })
 

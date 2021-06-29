@@ -73,7 +73,8 @@ router.put('/:id',authorization,async (req, res) => {
         {new: true});
 
     if(!user) return res.status(404).send("The user with the given ID was not found");
-    res.send(user);
+    const token = user.generateUserToken();
+    res.header('x-auth-token',token).send(token);
 })
 
 
